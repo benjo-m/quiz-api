@@ -43,7 +43,6 @@ public class QuizService {
         }
 
         List<Question> questions = getQuestionList(category, difficulty, amount);
-
         List<QuestionResposne> questionResposneList = new ArrayList<>();
 
         for (Question q : questions) {
@@ -85,5 +84,4 @@ public class QuizService {
 
         return Optional.of(new QuestionResposne(questionRequest));
     }
-
 }
