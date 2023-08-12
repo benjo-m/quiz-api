@@ -1,14 +1,16 @@
 package com.example.quizapi.controller;
 
-import com.example.quizapi.models.Answer;
 import com.example.quizapi.request.QuestionRequest;
 import com.example.quizapi.response.CategoryResponse;
 import com.example.quizapi.response.DifficultyResponse;
 import com.example.quizapi.response.QuestionFullResponse;
+import com.example.quizapi.response.QuestionResposne;
 import com.example.quizapi.service.QuizService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/quiz-api")
@@ -29,18 +31,27 @@ public class QuizController {
         return quizService.getDifficultyList();
     }
 
-    @GetMapping("/answers")
-    public List<Answer> getAllAnswers() {
-        return quizService.getAllAnswers();
-    }
-
     @GetMapping("/questions")
-    public QuestionFullResponse getQuestionsByDifficulty() {
-        return quizService.getQuestions();
+    public ResponseEntity<QuestionFullResponse> getQuestions(@RequestParam(required = false) String category,
+                                             @RequestParam(required = false) String difficulty,
+                                             @RequestParam(required = false, defaultValue = "5") Integer amount) {
+
+        Optional<QuestionFullResponse> questionsOptional = quizService.getQuestions(category, difficulty, amount);
+
+        if (questionsOptional.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(questionsOptional.get(), HttpStatus.OK);
     }
 
     @PostMapping("/questions")
-    public void submitQuestion(@RequestBody QuestionRequest questionRequest) {
-        quizService.submitQuestion(questionRequest);
+    public ResponseEntity<QuestionResposne> submitQuestion(@RequestBody QuestionRequest questionRequest) {
+        Optional<QuestionResposne> question = quizService.submitQuestion(questionRequest);
+
+        if (question.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(question.get(), HttpStatus.OK);
     }
 }

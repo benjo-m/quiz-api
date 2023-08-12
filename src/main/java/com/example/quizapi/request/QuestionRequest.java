@@ -1,5 +1,7 @@
 package com.example.quizapi.request;
 
+import com.example.quizapi.Resources;
+
 import java.util.List;
 
 public class QuestionRequest {
@@ -8,6 +10,11 @@ public class QuestionRequest {
     private String category;
     private String correctAnswer;
     private List<String> incorrectAnswers;
+
+    public Boolean isValid() {
+        return question != null && !question.isBlank() && Resources.difficultyList.contains(difficulty)
+            && Resources.categoryList.contains(category) && correctAnswer != null && !correctAnswer.isBlank() && !incorrectAnswers.isEmpty();
+    }
 
     public QuestionRequest() {
     }
@@ -60,15 +67,3 @@ public class QuestionRequest {
         this.incorrectAnswers = incorrectAnswers;
     }
 }
-
-//    {
-//        "question": "What is the capital of Sweden?",
-//        "difficulty": "easy",
-//        "category": "geography",
-//        "correctAnswer": "Stockholm",
-//        "incorrectAnswers": [
-//            "Copenhagen",
-//            "Edinburgh",
-//            "Helsinki"
-//        ]
-//    },

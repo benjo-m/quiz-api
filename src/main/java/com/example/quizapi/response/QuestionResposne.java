@@ -1,6 +1,7 @@
 package com.example.quizapi.response;
 
 import com.example.quizapi.models.Question;
+import com.example.quizapi.request.QuestionRequest;
 
 import java.util.List;
 
@@ -17,6 +18,14 @@ public class QuestionResposne {
         this.category = question.getCategory().toLowerCase();
         this.correctAnswer = question.getCorrectAnswer();
         this.incorrectAnswers = incorrectAnswers;
+    }
+
+    public QuestionResposne(QuestionRequest questionRequest) {
+        this.question = questionRequest.getQuestion();
+        this.difficulty = questionRequest.getDifficulty();
+        this.category = questionRequest.getCategory();
+        this.correctAnswer = questionRequest.getCorrectAnswer();
+        this.incorrectAnswers = questionRequest.getIncorrectAnswers();
     }
     public String getQuestion() {
         return question;

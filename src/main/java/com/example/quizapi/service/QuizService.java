@@ -14,12 +14,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuizService {
 
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
+    private final Integer MIN_QUESTIONS = 5;
+    private final Integer MAX_QUESTIONS = 20;
 
     public QuizService(AnswerRepository answerRepository, QuestionRepository questionRepository) {
         this.answerRepository = answerRepository;
@@ -34,12 +37,13 @@ public class QuizService {
         return new DifficultyResponse(Resources.difficultyList);
     }
 
-    public List<Answer> getAllAnswers() {
-        return answerRepository.findAll();
-    }
+    public Optional<QuestionFullResponse> getQuestions(String category, String difficulty, Integer amount) {
+        if (amount < MIN_QUESTIONS || amount > MAX_QUESTIONS) {
+            return Optional.empty();
+        }
 
-    public QuestionFullResponse getQuestions() {
-        List<Question> questions = questionRepository.findAll();
+        List<Question> questions = getQuestionList(category, difficulty, amount);
+
         List<QuestionResposne> questionResposneList = new ArrayList<>();
 
         for (Question q : questions) {
@@ -48,17 +52,38 @@ public class QuizService {
             questionResposneList.add(new QuestionResposne(q, texts));
         }
 
-        return new QuestionFullResponse(questionResposneList);
+        return Optional.of(new QuestionFullResponse(questionResposneList));
     }
 
-    public void submitQuestion(QuestionRequest questionRequest) {
+    private List<Question> getQuestionList(String category, String difficulty, Integer amount) {
+        List<Question> questions;
+        if (category != null && difficulty != null) {
+            questions = questionRepository.findByCategoryAndDifficulty(category, difficulty, amount);
+        } else if (category != null) {
+            questions = questionRepository.findByCategory(category, amount);
+        } else if (difficulty != null) {
+            questions = questionRepository.findByDifficulty(difficulty, amount);
+        } else {
+            questions = questionRepository.findAllQuestions(amount);
+        }
+        return questions;
+    }
+
+    public Optional<QuestionResposne> submitQuestion(QuestionRequest questionRequest) {
+        if (!questionRequest.isValid()) {
+            return Optional.empty();
+        }
+
         Question question = new Question(questionRequest);
+
         questionRepository.save(question);
 
         for (String s : questionRequest.getIncorrectAnswers()) {
             Answer answer = new Answer(s, question);
             answerRepository.save(answer);
         }
+
+        return Optional.of(new QuestionResposne(questionRequest));
     }
 
 }
