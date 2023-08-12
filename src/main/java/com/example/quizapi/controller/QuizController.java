@@ -45,7 +45,7 @@ public class QuizController {
         return new ResponseEntity<>(questionsOptional.get(), HttpStatus.OK);
     }
 
-    @PostMapping("/questions")
+    @PostMapping("/submit-question")
     public ResponseEntity<QuestionResposne> submitQuestion(@RequestBody QuestionRequest questionRequest) {
         Optional<QuestionResposne> question = quizService.submitQuestion(questionRequest);
 

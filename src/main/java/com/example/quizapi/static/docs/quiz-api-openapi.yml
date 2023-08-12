@@ -1,0 +1,137 @@
+openapi: "3.0.0"
+info:
+  title: Quiz API
+  description: API for generating quizzes.
+  version: '1.0.0'
+servers:
+  - url: http://localhost:8080
+paths:
+  /quiz-api/categories:
+    get:
+      summary: "GET quiz-api/categories"
+      operationId: "getCategories"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /quiz-api/difficulty:
+    get:
+      summary: "GET quiz-api/difficulty"
+      operationId: "getDifficultyList"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DifficultyResponse"
+  /quiz-api/questions:
+    get:
+      summary: "GET quiz-api/questions"
+      operationId: "getQuestions"
+      parameters:
+        - name: "category"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "difficulty"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "amount"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "5"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/QuestionFullResponse"
+  /quiz-api/submit-question:
+    post:
+      summary: "POST quiz-api/questions"
+      operationId: "submitQuestion"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuestionRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/QuestionResposne"
+
+components:
+  schemas:
+    CategoryResponse:
+      title: CategoryResponse
+      type: object
+      properties:
+        categoryList:
+          type: array
+          items:
+            type: string
+    DifficultyResponse:
+      title: DifficultyResponse
+      type: object
+      properties:
+        difficultyList:
+          type: array
+          items:
+            type: string
+    QuestionFullResponse:
+      title: QuestionFullResponse
+      type: object
+      properties:
+        numberOfQuestions:
+          type: number
+        questions:
+          type: array
+          items:
+            type: string
+    QuestionRequest:
+      title: QuestionRequest
+      type: object
+      properties:
+        question:
+          type: string
+        difficulty:
+          type: string
+        category:
+          type: string
+        correctAnswer:
+          type: string
+        incorrectAnswers:
+          type: array
+          items:
+            type: string
+    QuestionResposne:
+      title: QuestionResposne
+      type: object
+      properties:
+        question:
+          type: string
+        difficulty:
+          type: string
+        category:
+          type: string
+        correctAnswer:
+          type: string
+        incorrectAnswers:
+          type: array
+          items:
+            type: string
