@@ -1,4 +1,6 @@
 # Quiz API
+
+## Description
 This API allows you to fetch and post quiz questions to a database. You can use this API to post and retrieve random trivia questions by category and difficulty.
 
 ## Endpoints
