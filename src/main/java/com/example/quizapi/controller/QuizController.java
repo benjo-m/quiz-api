@@ -32,9 +32,10 @@ public class QuizController {
     }
 
     @GetMapping("/questions")
-    public ResponseEntity<QuestionFullResponse> getQuestions(@RequestParam(required = false) String category,
-                                             @RequestParam(required = false) String difficulty,
-                                             @RequestParam(required = false, defaultValue = "5") Integer amount) {
+    public ResponseEntity<QuestionFullResponse> getQuestions(
+        @RequestParam(required = false) String category,
+        @RequestParam(required = false) String difficulty,
+        @RequestParam(required = false, defaultValue = "5") Integer amount) {
 
         Optional<QuestionFullResponse> questionsOptional = quizService.getQuestions(category, difficulty, amount);
 
@@ -45,7 +46,7 @@ public class QuizController {
         return new ResponseEntity<>(questionsOptional.get(), HttpStatus.OK);
     }
 
-    @PostMapping("/submit-question")
+    @PostMapping("/questions")
     public ResponseEntity<QuestionResposne> submitQuestion(@RequestBody QuestionRequest questionRequest) {
         Optional<QuestionResposne> question = quizService.submitQuestion(questionRequest);
 

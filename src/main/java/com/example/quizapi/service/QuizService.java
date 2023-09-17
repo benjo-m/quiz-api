@@ -38,7 +38,8 @@ public class QuizService {
     }
 
     public Optional<QuestionFullResponse> getQuestions(String category, String difficulty, Integer amount) {
-        if (amount < MIN_QUESTIONS || amount > MAX_QUESTIONS) {
+        if (amount < MIN_QUESTIONS || amount > MAX_QUESTIONS || !Resources.validCategory(category)
+                || !Resources.validDifficulty(difficulty)) {
             return Optional.empty();
         }
 
