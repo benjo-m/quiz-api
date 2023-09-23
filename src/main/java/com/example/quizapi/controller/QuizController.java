@@ -60,7 +60,7 @@ public class QuizController {
         Optional<QuestionResposne> question = quizService.submitQuestion(questionRequest);
 
         if (question.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new InvalidRequestException("Invalid question structure");
         }
 
         return new ResponseEntity<>(question.get(), HttpStatus.OK);
