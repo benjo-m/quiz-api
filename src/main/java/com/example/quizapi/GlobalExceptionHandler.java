@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
+    public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex) {
         ErrorResponse errorResponse = new ErrorResponse();
 
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setMessage(e.getMessage());
+        errorResponse.setMessage(ex.getMessage());
         errorResponse.setTimeStamp(LocalDateTime.now());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
