@@ -6,10 +6,7 @@ import com.example.quizapi.models.Question;
 import com.example.quizapi.repository.AnswerRepository;
 import com.example.quizapi.repository.QuestionRepository;
 import com.example.quizapi.request.QuestionRequest;
-import com.example.quizapi.response.CategoryResponse;
-import com.example.quizapi.response.DifficultyResponse;
-import com.example.quizapi.response.QuestionFullResponse;
-import com.example.quizapi.response.QuestionResposne;
+import com.example.quizapi.response.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
