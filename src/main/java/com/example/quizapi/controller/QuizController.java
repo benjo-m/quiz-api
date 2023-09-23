@@ -30,7 +30,7 @@ public class QuizController {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/categories")
+    @GetMapping("/category")
     public CategoryResponse getCategories() {
         return quizService.getCategoryList();
     }
@@ -49,7 +49,7 @@ public class QuizController {
         Optional<QuestionFullResponse> questionsOptional = quizService.getQuestions(category, difficulty, amount);
 
         if (questionsOptional.isEmpty()) {
-            throw new InvalidRequestException("Invalid category / difficulty / amount (min=5)");
+            throw new InvalidRequestException("Invalid category / difficulty / amount (min=5, max=20)");
         }
 
         return new ResponseEntity<>(questionsOptional.get(), HttpStatus.OK);

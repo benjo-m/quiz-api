@@ -1,12 +1,12 @@
 package com.example.quizapi.service;
 
-import com.example.quizapi.Resources;
 import com.example.quizapi.models.Answer;
 import com.example.quizapi.models.Question;
 import com.example.quizapi.repository.AnswerRepository;
 import com.example.quizapi.repository.QuestionRepository;
 import com.example.quizapi.request.QuestionRequest;
 import com.example.quizapi.response.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,8 +18,18 @@ public class QuizService {
 
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
-    private final Integer MIN_QUESTIONS = 5;
-    private final Integer MAX_QUESTIONS = 20;
+
+    @Value("${MIN_QUESTIONS}")
+    private Integer MIN_QUESTIONS;
+
+    @Value("${MAX_QUESTIONS}")
+    private Integer MAX_QUESTIONS;
+
+    @Value("${DIFFICULTY_LIST}")
+    private List<String> DIFFICULTY_LIST;
+
+    @Value("${CATEGORY_LIST}")
+    private List<String> CATEGORY_LIST;
 
     public QuizService(AnswerRepository answerRepository, QuestionRepository questionRepository) {
         this.answerRepository = answerRepository;
@@ -27,16 +37,16 @@ public class QuizService {
     }
 
     public CategoryResponse getCategoryList() {
-        return new CategoryResponse(Resources.categoryList);
+        return new CategoryResponse(CATEGORY_LIST);
     }
 
     public DifficultyResponse getDifficultyList() {
-        return new DifficultyResponse(Resources.difficultyList);
+        return new DifficultyResponse(DIFFICULTY_LIST);
     }
 
     public Optional<QuestionFullResponse> getQuestions(String category, String difficulty, Integer amount) {
-        if (amount < MIN_QUESTIONS || amount > MAX_QUESTIONS || !Resources.validCategory(category)
-                || !Resources.validDifficulty(difficulty)) {
+        if (amount < MIN_QUESTIONS || amount > MAX_QUESTIONS || !isValidCategory(category)
+                || !isValidDifficulty(difficulty)) {
             return Optional.empty();
         }
 
@@ -67,7 +77,7 @@ public class QuizService {
     }
 
     public Optional<QuestionResposne> submitQuestion(QuestionRequest questionRequest) {
-        if (!questionRequest.isValid()) {
+        if (isValidQuestionRequest(questionRequest)) {
             return Optional.empty();
         }
 
@@ -81,5 +91,23 @@ public class QuizService {
         }
 
         return Optional.of(new QuestionResposne(questionRequest));
+    }
+
+    private boolean isValidCategory(String category) {
+        return CATEGORY_LIST.contains(category) || category == null;
+    }
+
+    private boolean isValidDifficulty(String difficulty) {
+        return DIFFICULTY_LIST.contains(difficulty) || difficulty == null;
+    }
+
+    private boolean isValidQuestionRequest(QuestionRequest questionRequest) {
+        return questionRequest.getQuestion() != null
+            && !questionRequest.getQuestion().isBlank()
+            && isValidDifficulty(questionRequest.getDifficulty())
+            && isValidCategory(questionRequest.getCategory())
+            && questionRequest.getCorrectAnswer() != null
+            && !questionRequest.getCorrectAnswer().isBlank()
+            && !questionRequest.getIncorrectAnswers().isEmpty();
     }
 }

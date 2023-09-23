@@ -10,12 +10,6 @@ public class ErrorResponse {
     public ErrorResponse() {
     }
 
-    public ErrorResponse(Integer status, String message, LocalDateTime timeStamp) {
-        this.status = status;
-        this.message = message;
-        this.timeStamp = timeStamp;
-    }
-
     public Integer getStatus() {
         return status;
     }
