@@ -1,6 +1,6 @@
 package com.example.quizapi.repository;
 
-import com.example.quizapi.models.Question;
+import com.example.quizapi.model.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

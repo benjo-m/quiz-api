@@ -1,7 +1,7 @@
-package com.example.quizapi.service;
+package com.example.quizapi;
 
-import com.example.quizapi.models.Answer;
-import com.example.quizapi.models.Question;
+import com.example.quizapi.model.Answer;
+import com.example.quizapi.model.Question;
 import com.example.quizapi.repository.AnswerRepository;
 import com.example.quizapi.repository.QuestionRepository;
 import com.example.quizapi.request.QuestionRequest;

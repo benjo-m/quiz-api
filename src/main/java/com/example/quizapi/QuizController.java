@@ -1,13 +1,12 @@
-package com.example.quizapi.controller;
+package com.example.quizapi;
 
 import com.example.quizapi.exception.InvalidRequestException;
 import com.example.quizapi.request.QuestionRequest;
 import com.example.quizapi.response.*;
-import com.example.quizapi.service.QuizService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
+
 import java.util.Optional;
 
 @RestController
@@ -17,17 +16,6 @@ public class QuizController {
 
     public QuizController(QuizService quizService) {
         this.quizService = quizService;
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
-        ErrorResponse errorResponse = new ErrorResponse();
-
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setMessage(e.getMessage());
-        errorResponse.setTimeStamp(LocalDateTime.now());
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/category")
@@ -49,7 +37,7 @@ public class QuizController {
         Optional<QuestionFullResponse> questionsOptional = quizService.getQuestions(category, difficulty, amount);
 
         if (questionsOptional.isEmpty()) {
-            throw new InvalidRequestException("Invalid category / difficulty / amount (min=5, max=20)");
+            throw new InvalidRequestException("Invalid category, difficulty, or amount");
         }
 
         return new ResponseEntity<>(questionsOptional.get(), HttpStatus.OK);

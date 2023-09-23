@@ -1,6 +1,6 @@
 package com.example.quizapi.response;
 
-import com.example.quizapi.models.Question;
+import com.example.quizapi.model.Question;
 import com.example.quizapi.request.QuestionRequest;
 
 import java.util.List;

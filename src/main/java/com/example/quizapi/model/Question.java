@@ -1,4 +1,4 @@
-package com.example.quizapi.models;
+package com.example.quizapi.model;
 
 import com.example.quizapi.request.QuestionRequest;
 import jakarta.persistence.*;
