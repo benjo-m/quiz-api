@@ -2,7 +2,6 @@ package com.example.quizapi;
 
 import com.example.quizapi.model.Answer;
 import com.example.quizapi.model.Question;
-import com.example.quizapi.repository.AnswerRepository;
 import com.example.quizapi.repository.QuestionRepository;
 import com.example.quizapi.request.QuestionRequest;
 import com.example.quizapi.response.*;
@@ -16,7 +15,6 @@ import java.util.Optional;
 @Service
 public class QuizService {
 
-    private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
 
     @Value("${MIN_QUESTIONS}")
@@ -31,8 +29,7 @@ public class QuizService {
     @Value("${CATEGORY_LIST}")
     private List<String> CATEGORY_LIST;
 
-    public QuizService(AnswerRepository answerRepository, QuestionRepository questionRepository) {
-        this.answerRepository = answerRepository;
+    public QuizService(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
 
@@ -44,7 +41,7 @@ public class QuizService {
         return new DifficultyResponse(DIFFICULTY_LIST);
     }
 
-    public Optional<QuestionFullResponse> getQuestions(String category, String difficulty, Integer amount) {
+    public Optional<QuestionListResponse> getQuestions(String category, String difficulty, Integer amount) {
         if (amount < MIN_QUESTIONS || amount > MAX_QUESTIONS || !isValidCategory(category)
                 || !isValidDifficulty(difficulty)) {
             return Optional.empty();
@@ -54,12 +51,11 @@ public class QuizService {
         List<QuestionResposne> questionResposneList = new ArrayList<>();
 
         for (Question q : questions) {
-            List<Answer> answers = answerRepository.findAllByQuestion_Id(q.getId());
-            List<String> texts = answers.stream().map(Answer::getText).toList();
+            List<String> texts = q.getIncorrectAnswers().stream().map(Answer::getText).toList();
             questionResposneList.add(new QuestionResposne(q, texts));
         }
 
-        return Optional.of(new QuestionFullResponse(questionResposneList));
+        return Optional.of(new QuestionListResponse(questionResposneList));
     }
 
     private List<Question> getQuestionList(String category, String difficulty, Integer amount) {
@@ -77,18 +73,21 @@ public class QuizService {
     }
 
     public Optional<QuestionResposne> submitQuestion(QuestionRequest questionRequest) {
-        if (isValidQuestionRequest(questionRequest)) {
+        if (!isValidQuestionRequest(questionRequest)) {
             return Optional.empty();
         }
 
         Question question = new Question(questionRequest);
-
-        questionRepository.save(question);
+        List<Answer> incorrectAnswers = new ArrayList<>();
 
         for (String s : questionRequest.getIncorrectAnswers()) {
             Answer answer = new Answer(s, question);
-            answerRepository.save(answer);
+            incorrectAnswers.add(answer);
         }
+
+        question.setIncorrectAnswers(incorrectAnswers);
+
+        questionRepository.save(question);
 
         return Optional.of(new QuestionResposne(questionRequest));
     }

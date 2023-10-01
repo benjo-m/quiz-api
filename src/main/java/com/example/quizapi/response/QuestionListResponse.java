@@ -2,14 +2,14 @@ package com.example.quizapi.response;
 
 import java.util.List;
 
-public class QuestionFullResponse {
+public class QuestionListResponse {
     private Integer numberOfQuestions;
     private List<QuestionResposne> questions;
 
-    public QuestionFullResponse() {
+    public QuestionListResponse() {
     }
 
-    public QuestionFullResponse(List<QuestionResposne> questions) {
+    public QuestionListResponse(List<QuestionResposne> questions) {
         this.numberOfQuestions = questions.size();
         this.questions = questions;
     }

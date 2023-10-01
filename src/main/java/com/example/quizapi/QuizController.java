@@ -29,12 +29,12 @@ public class QuizController {
     }
 
     @GetMapping("/questions")
-    public ResponseEntity<QuestionFullResponse> getQuestions(
+    public ResponseEntity<QuestionListResponse> getQuestions(
         @RequestParam(required = false) String category,
         @RequestParam(required = false) String difficulty,
         @RequestParam(required = false, defaultValue = "5") Integer amount) {
 
-        Optional<QuestionFullResponse> questionsOptional = quizService.getQuestions(category, difficulty, amount);
+        Optional<QuestionListResponse> questionsOptional = quizService.getQuestions(category, difficulty, amount);
 
         if (questionsOptional.isEmpty()) {
             throw new InvalidRequestException("Invalid category, difficulty, or amount");

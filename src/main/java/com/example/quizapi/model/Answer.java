@@ -1,5 +1,6 @@
 package com.example.quizapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -8,17 +9,21 @@ import java.util.UUID;
 @Table(name = "answers", schema = "public")
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+    @Column(name = "text")
     private String text;
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "question_id")
     private Question question;
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -38,7 +43,7 @@ public class Answer {
         this.question = question;
     }
 
-    public Answer(UUID id, String text, Question question) {
+    public Answer(Integer id, String text, Question question) {
         this.id = id;
         this.text = text;
         this.question = question;
